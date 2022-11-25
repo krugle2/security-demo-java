@@ -16,6 +16,8 @@ public class LoginHandlerServlet extends HttpServlet {
 
     String theUser = req.getParameter("userId");
     String thePassword = req.getParameter("password");
+    String theNextURL = req.getParameter("next");
+    
     try {
       req.login(theUser, thePassword);
     } catch (ServletException e) {
@@ -25,7 +27,11 @@ public class LoginHandlerServlet extends HttpServlet {
     }
     boolean loggedIn = req.getUserPrincipal() != null && req.isUserInRole("customer");
     if (loggedIn) {
-      resp.sendRedirect("/app");
+      if (theNextURL != null && theNextURL.length > 0) {
+        resp.sendRedirect(theNextURL);
+      } else {
+        resp.sendRedirect("/app");
+      }
     } else {
       forwardToLogin(req, resp, "Login failed.");
     }
